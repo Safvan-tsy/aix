@@ -11,7 +11,7 @@ process.on("uncaughtException", (err: Error) => {
 });
 
 const server = app.listen(port, () => {
-  console.log(`Backend running at ${port}`);
+  console.log(`backend ready at ${port}`);
 });
 
 process.on("unhandledRejection", (err: Error) => {
