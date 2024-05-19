@@ -17,17 +17,21 @@ app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 app.use(cors(corsOptions));
 app.use((req: Request, res: Response, next: NextFunction) => {
-  if (req.headers['content-type'] === 'text/plain; charset=utf-8' || req.headers['content-type'] === 'text/plain') {
-    let data = '';
-    req.setEncoding('utf8');
-    req.on('data', chunk => {
+  if (
+    req.headers["content-type"] === "text/plain; charset=utf-8" ||
+    req.headers["content-type"] === "text/plain"
+  ) {
+    let data = "";
+    req.setEncoding("utf8");
+    req.on("data", (chunk) => {
       data += chunk;
     });
-    req.on('end', () => {
+    req.on("end", () => {
       try {
+        console.log(data);
         req.body = JSON.parse(data);
       } catch (err) {
-        return next(new AppError('Invalid JSON body', 400));
+        return next(new AppError("Invalid JSON body", 400));
       }
       next();
     });
