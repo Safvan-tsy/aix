@@ -9,17 +9,10 @@ const generateResume = catchAsync(
     console.log("Headers:", req.headers);
     console.log("Body:", req.body);
     // return next(new AppError('Delete failed , check id', 400))
-    res.status(200).json({
-      status: "success",
-      data,
-    });
+    res.status(200).send(data);
   }
 );
 
-const pdfGeneratorcatchAsync = catchAsync(
-  async () => {
-    
-  }
-);
+const pdfGeneratorcatchAsync = catchAsync(async () => {});
 
 export { generateResume };
