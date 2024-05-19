@@ -28,7 +28,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     });
     req.on("end", () => {
       try {
-        console.log(data);
+        console.log("data to parse:", data);
         req.body = JSON.parse(data);
       } catch (err) {
         return next(new AppError("Invalid JSON body", 400));
