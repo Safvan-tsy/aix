@@ -3,7 +3,7 @@ import { generateResume } from "../handlers/resume.handler";
 
 const router = express.Router();
 
-router.route("/").get(generateResume);
+router.route("/").post(generateResume);
 
 // router.route("").get();
 
