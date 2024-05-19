@@ -8,7 +8,7 @@ const generateResume = catchAsync(
     console.log(data);
 
     // return next(new AppError('Delete failed , check id', 400))
-    res.status(204).json({
+    res.status(200).json({
       status: "success",
       data,
     });
