@@ -16,4 +16,10 @@ const generateResume = catchAsync(
   }
 );
 
+const pdfGeneratorcatchAsync = catchAsync(
+  async () => {
+    
+  }
+);
+
 export { generateResume };
