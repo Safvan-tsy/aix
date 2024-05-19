@@ -3,8 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import AppError from "./utils/appError";
 import errorHandler from "./handlers/error.handler";
-
-// import productRouter from './routes/productRouter';
+import { resumeRouter } from "./routers";
 
 const app: Express = express();
 
@@ -17,8 +16,7 @@ const corsOptions = {
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 app.use(cors(corsOptions));
-
-// app.use('/api/product',productRouter);
+app.use("/api/resume", resumeRouter);
 
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
