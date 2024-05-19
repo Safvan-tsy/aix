@@ -16,6 +16,25 @@ const corsOptions = {
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 app.use(cors(corsOptions));
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (req.headers['content-type'] === 'text/plain; charset=utf-8' || req.headers['content-type'] === 'text/plain') {
+    let data = '';
+    req.setEncoding('utf8');
+    req.on('data', chunk => {
+      data += chunk;
+    });
+    req.on('end', () => {
+      try {
+        req.body = JSON.parse(data);
+      } catch (err) {
+        return next(new AppError('Invalid JSON body', 400));
+      }
+      next();
+    });
+  } else {
+    next();
+  }
+});
 app.use("/api/resume", resumeRouter);
 
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
