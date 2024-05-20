@@ -5,14 +5,18 @@ import catchAsync from "../utils/catchAsync";
 const generateResume = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     let data = req.body;
-    data = data[0].replace(/\\n/g, '');
-    const parsedData =  JSON.parse(data);  
+    console.log(data);
+    // data = data[0].replace(/\\n/g, "");
+    // const parsedData = JSON.parse(data);
+    const parsedData = parseData(data);
     res.status(200).send(parsedData);
   }
 );
+const refactorData = (data) => {
+  const fullName = data;
+};
 const parseData = (data) => {
-
-  const fullName= data
+  return JSON.parse(data[0].replace(/\\n/g, ""));
 };
 
 const pdfGeneratorcatchAsync = catchAsync(async () => {});
