@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import puppeteer from "puppeteer";
 import AppError from "../utils/appError";
 import catchAsync from "../utils/catchAsync";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryUploadResponse } from "../types/cloudinary";
 
 const generateResume = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -10,15 +12,12 @@ const generateResume = catchAsync(
     // const parsedData = JSON.parse(data);
     const parsedData = getParsedData(data);
     const refactoredData = getRefactoredData(parsedData);
-    const pdf = await pdfGenerator(refactoredData);
-    res.set({
-      "Content-Type": "application/pdf",
-      "Content-Disposition": "attachment; filename=resume.pdf",
-    });
+    const pdf = await getUploadedUrl(refactoredData);
 
     res.status(200).send(pdf);
   }
 );
+
 const getRefactoredData = (data) => {
   return {
     fullName: capitalizeFirstLetterOfEachWord(data.basic_details.name),
@@ -31,23 +30,23 @@ const getRefactoredData = (data) => {
     experience: data.experience,
   };
 };
+
 function capitalizeFirstLetterOfEachWord(str) {
   return str.replace(/\b\w/g, (char) => char.toUpperCase());
 }
+
 const getParsedData = (data) => {
   return JSON.parse(data[0].replace(/\\n/g, ""));
 };
-const pdfGenerator = async (data) => {
+
+const pdfGenerator = async (data): Promise<Buffer> => {
   // Create a browser instance
   const browser = await puppeteer.launch();
-
-  // Create a new page
   const page = await browser.newPage();
   const htmlContent = getHTMLTemplate(data);
-  // console.log('html',htmlContent)
-  await page.setContent(htmlContent, { waitUntil: "networkidle0" });
+  await page.setContent(htmlContent, { waitUntil: "domcontentloaded" });
   await page.emulateMediaType("screen");
-  console.log("page:", page);
+
   const pdf = await page.pdf({
     format: "A4",
     printBackground: true,
@@ -57,91 +56,95 @@ const pdfGenerator = async (data) => {
   await browser.close();
   return pdf;
 };
+
+const uploadPdfToCloudinary = (
+  buffer: Buffer
+): Promise<CloudinaryUploadResponse> => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "resumes" },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result as CloudinaryUploadResponse);
+      }
+    );
+    stream.end(buffer);
+  });
+};
+
+const getUploadedUrl = async (data: any) => {
+  const pdfBuffer = await pdfGenerator(data);
+  const result = await uploadPdfToCloudinary(pdfBuffer);
+  return result.secure_url;
+};
+
 const getHTMLTemplate = (data) => {
-  return `<!DOCTYPE html>
+  return `
+  <!DOCTYPE html>
   <html>
   <head>
-      <title>My profile</title>
-      <head>
-      <style type="text/css">
-          body{
-              width: 1200px;
+      <title>Resume</title>
+      <style>
+          body {
+              font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
               margin: 0;
-              padding: 0px;
-              font-size: 16px;
-              line-height: 24px;
-              font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-              color: rgb(33,33,33);
+              padding: 0;
           }
-          .report-header{
-              background: rgb(178,230,212);
-              color: rgb(102,102,103);
+          .header, .footer {
+              background-color: #b2e6d4;
+              color: #666667;
               padding: 15px;
-              padding-left: 200px;
-              box-sizing: border-box;
-              display: block;
-              position: relative;
           }
-          .report-header .logo{
-              position: absolute;
-              top: 40px;
-              left: 15px;
-              width: 150px;
+          .header h3, .footer {
+              margin: 0;
           }
-          .report-footer{
-              background: rgb(178,230,212);
-              color: rgb(102,102,103);
+          .content {
               padding: 15px;
-              box-sizing: border-box;
-              display: block;
-              position: relative;
           }
-          .report-body{
-              width: 70%;
-              display: inline-block;
-              position: relative;
-              padding: 15px;
-              box-sizing: border-box;
-              vertical-align: top;
+          .content .section {
+              margin-bottom: 20px;
           }
-          .report-photo{
-              width: 28%;
-              display: inline-block;
-              position: relative;
-              vertical-align: top;
-              box-sizing: border-box;
-              margin-top: 15px;
-          }
-          .report-body .info p{
-              border: #ccc solid 1px;
-              padding: 5px;
-              display: block;
-              position: relative;
+          .content .section h4 {
+              margin-bottom: 10px;
+              border-bottom: 1px solid #ccc;
+              padding-bottom: 5px;
           }
       </style>
-      <meta charset="utf-8">
   </head>
   <body>
-      <div class="report-header">
+      <div class="header">
           <h3>${data.fullName}</h3>
-          <p>{{date}}</p>
+          <p>${data.title}</p>
+          <p>${data.location}</p>
       </div>
-      <div class="report-body">
-          <div class="info">
-              <p>Student: {{name}}</p>
-              <p>Age: {{age}}</p>
-              <p>Birthdate: {{birthdate}}</p>
-              <p>Course: {{course}}</p>
+      <div class="content">
+          <div class="section">
+              <h4>Contact</h4>
+              <p>${data.contact}</p>
           </div>
-          <div class="obs">
-              <p>Bio: {{bio}}</p>
+          <div class="section">
+              <h4>About</h4>
+              <p>${data.about}</p>
+          </div>
+          <div class="section">
+              <h4>Skills</h4>
+              <p>${data.skills.join(", ")}</p>
+          </div>
+          <div class="section">
+              <h4>Education</h4>
+              test1
+          </div>
+          <div class="section">
+              <h4>Experience</h4>
+              test</p>
           </div>
       </div>
-      <div class="report-footer">
-          Happy Puppeteering!
+      <div class="footer">
+          <p>test</p>
       </div>
   </body>
-  </html>`;
+  </html>
+  `;
 };
 
 export { generateResume };
