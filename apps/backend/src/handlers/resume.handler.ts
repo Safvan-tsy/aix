@@ -208,31 +208,48 @@ const getHTMLTemplate = (data: UserDataType) => {
     </div></div>
      
       <p style="padding-top: 2pt;text-indent: 0pt;text-align: left;"><br /></p>
+
       <p class="s3" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">ABOUT</p>
       <p style="padding-top: 6pt;padding-left: 5pt;text-indent: 0pt;line-height: 125%;text-align: left;">${data.about}</p>
+
       <p style="padding-top: 5pt;text-indent: 0pt;text-align: left;"><br /></p>
+
       <p class="s3" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">EXPERIENCE</p>
-      <p style="padding-top: 2pt;text-indent: 0pt;text-align: left;"><br /></p>
-      <h2 style="padding-left: 5pt;text-indent: 0pt;text-align: left;">Company, <span class="s4">Location — </span><i>Job Title</i></h2>
-      <p class="s6" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">MONTH 20XX - PRESENT</p>
-      <p style="padding-top: 6pt;padding-left: 5pt;text-indent: 0pt;line-height: 125%;text-align: left;">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh.</p>
+      ${data.experience.map(
+        (item) =>
+          `
+        <p style="padding-top: 2pt;text-indent: 0pt;text-align: left;"><br /></p>
+        <h2 style="padding-left: 5pt;text-indent: 0pt;text-align: left;">${item.org ? item.org : ""} - <span class="s4">${item.title ? item.title : ""}</span></h2>
+        <p class="s6" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">${item.duration ? item.duration : ""}</p>
+        <p style="padding-top: 6pt;padding-left: 5pt;text-indent: 0pt;line-height: 125%;text-align: left;">${item.description ? item.description : ""}</p>
+      `
+      )}
       <p style="padding-top: 5pt;text-indent: 0pt;text-align: left;"><br /></p>
   
       <p class="s3" style="padding-left: 5pt;text-indent: 0pt;text-align: left;">EDUCATION</p>
+      ${data.education.map(
+        (item) =>
+          `
       <p style="padding-top: 2pt;text-indent: 0pt;text-align: left;"><br /></p>
-      <h2 style="padding-left: 5pt;text-indent: 0pt;text-align: left;">School Name, <span class="s4">Location — </span><i>Degree</i></h2>
-      <p class="s6" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">MONTH 20XX - MONTH 20XX</p>
-      <p style="padding-top: 6pt;padding-left: 5pt;text-indent: 0pt;line-height: 125%;text-align: left;">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore.</p>
-      
+      <h2 style="padding-left: 5pt;text-indent: 0pt;text-align: left;">${item.institution ? item.institution : ""} - <span class="s4">${item.course_name ? item.course_name : ""}</span></h2>
+      <p class="s6" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">${item.duration ? item.duration : ""}</p>
+      <p style="padding-top: 6pt;padding-left: 5pt;text-indent: 0pt;line-height: 125%;text-align: left;">${item.description ? item.description : ""}</p>
+      `
+      )}
       <p style="text-indent: 0pt;text-align: left;"><br /></p>
   
       <p class="s3" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">SKILLS</p>
       <p style="padding-top: 2pt;text-indent: 0pt;text-align: left;"><br /></p>
-      <p style="padding-left: 5pt;text-indent: 0pt;line-height: 179%;text-align: left;">Lorem ipsum dolor sit amet. Consectetuer adipiscing elit.</p>
-      <p style="padding-left: 5pt;text-indent: 0pt;line-height: 127%;text-align: left;">Sed diam nonummy nibh euismod tincidunt.</p>
-      <p style="padding-top: 6pt;padding-left: 5pt;text-indent: 0pt;line-height: 127%;text-align: left;">Laoreet dolore magna aliquam erat volutpat.</p>
+      <ul>
+      ${data.skills.map(
+        (item) =>
+          `
+      <li style="padding-left: 5pt;text-indent: 0pt;line-height: 127%;text-align: left;">${item}</li>
+
+  `
+      )}
+      </ul>
       <p style="text-indent: 0pt;text-align: left;"><br /></p>
-  
 
   </body>
   

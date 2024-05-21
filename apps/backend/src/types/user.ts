@@ -8,6 +8,7 @@ interface UserContactype {
 
 interface UserExperienceType {
   org: string;
+  title: string;
   duration: string;
   description: string;
 }
