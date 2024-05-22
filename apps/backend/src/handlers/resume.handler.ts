@@ -16,7 +16,7 @@ const generateResume = catchAsync(
     res.status(200).json({ resume_url: pdf, data: refactoredData });
   }
 );
-function getModifiedLabel(value) {}
+
 const getRefactoredData = (data) => {
   if (!Array.isArray(data.education) && typeof data.education === "object")
     data.education = [data.education];
@@ -30,11 +30,14 @@ const getRefactoredData = (data) => {
       url: value,
     }));
   }
+  const location = Array.isArray(data.basic_details.location)
+    ? data.basic_details.location[0]
+    : data.basic_details.location;
 
   return {
     fullName: capitalizeFirstLetterOfEachWord(data.basic_details.name),
     title: capitalizeFirstLetterOfEachWord(data.basic_details.title),
-    location: data.basic_details.location,
+    location: location,
     contact: contactArray,
     about: data.about.about,
     skills: data.about.skills,
@@ -213,7 +216,7 @@ const getHTMLTemplate = (data: UserDataType) => {
     <div class='head'>
       <div>
      <h1 style="padding-top: 5pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">${data.fullName}</h1>
-        <p class="s6" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">${data.title} ${data.location.length > 0 ? `- <span class="s6">${data.location[0]}</span>` : ""}</p>
+        <p class="s6" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">${data.title} ${data.location ? `- <span class="s6">${data.location}</span>` : ""}</p>
       </div>
     <div style="padding-top: 5pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">
     ${data.contact
@@ -255,40 +258,46 @@ const getHTMLTemplate = (data: UserDataType) => {
       <p style="padding-top: 5pt;text-indent: 0pt;text-align: left;"><br /></p>
 
       <p class="s3" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">EXPERIENCE</p>
-      ${data.experience.map(
-        (item) =>
-          `
+      ${data.experience
+        .map(
+          (item) =>
+            `
         <p style="padding-top: 2pt;text-indent: 0pt;text-align: left;"><br /></p>
         <h2 style="padding-left: 5pt;text-indent: 0pt;text-align: left;">${item.org ? item.org : ""} ${item.title ? `- <span class="s4">${item.title}</span>` : ""}</h2>
         <p class="s6" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">${item.duration ? item.duration : ""}</p>
         <p style="padding-top: 6pt;padding-left: 5pt;text-indent: 0pt;line-height: 130%;text-align: left;">${item.description ? item.description : ""}</p>
       `
-      )}
+        )
+        .join("")}
       <p style="padding-top: 5pt;text-indent: 0pt;text-align: left;"><br /></p>
   
       <p class="s3" style="padding-left: 5pt;text-indent: 0pt;text-align: left;">EDUCATION</p>
-      ${data.education.map(
-        (item) =>
-          `
+      ${data.education
+        .map(
+          (item) =>
+            `
       <p style="padding-top: 2pt;text-indent: 0pt;text-align: left;"><br /></p>
       <h2 style="padding-left: 5pt;text-indent: 0pt;text-align: left;">${item.institution ? item.institution : ""} ${item.course_name ? `- <span class="s4">${item.course_name}</span>` : ""}</h2>
       <p class="s6" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">${item.duration ? item.duration : ""}</p>
       <p style="padding-top: 6pt;padding-left: 5pt;text-indent: 0pt;line-height: 130%;text-align: left;">${item.description ? item.description : ""}</p>
       `
-      )}
+        )
+        .join("")}
       <p style="text-indent: 0pt;text-align: left;"><br /></p>
   
       <p class="s3" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">SKILLS</p>
       <p style="padding-top: 2pt;text-indent: 0pt;text-align: left;"><br /></p>
-      <ul>
-      ${data.skills.map(
-        (item) =>
-          `
-      <li style="padding-left: 5pt;text-indent: 0pt;line-height: 127%;text-align: left;">${item}</li>
+      <div style="display: flex; flex-wrap: wrap;">
+      ${data.skills
+        .map(
+          (item) =>
+            `
+      <p style="padding-left: 5pt;text-indent: 0pt;line-height: 127%;text-align: left;">${item},</p>
 
   `
-      )}
-      </ul>
+        )
+        .join("")}
+      </div>
       <p style="text-indent: 0pt;text-align: left;"><br /></p>
 
   </body>
