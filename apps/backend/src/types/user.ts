@@ -19,7 +19,7 @@ interface UserEducationType {
 export interface UserDataType {
   fullName: string;
   title: string;
-  location: string[];
+  location: string;
   contact: UserContactype[];
   about: string;
   skills: string[];
