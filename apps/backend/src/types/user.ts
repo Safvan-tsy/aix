@@ -1,9 +1,6 @@
 interface UserContactype {
-  gmail: string;
-  twitter: string;
-  github: string;
-  linkedin: string;
-  personalWebsite: string;
+  label: string;
+  url: string;
 }
 
 interface UserExperienceType {
@@ -23,7 +20,7 @@ export interface UserDataType {
   fullName: string;
   title: string;
   location: string[];
-  contact: UserContactype;
+  contact: UserContactype[];
   about: string;
   skills: string[];
   education: UserEducationType[];

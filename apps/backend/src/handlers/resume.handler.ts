@@ -16,17 +16,26 @@ const generateResume = catchAsync(
     res.status(200).json({ resume_url: pdf, data: refactoredData });
   }
 );
-
+function getModifiedLabel(value) {}
 const getRefactoredData = (data) => {
   if (!Array.isArray(data.education) && typeof data.education === "object")
     data.education = [data.education];
   if (!Array.isArray(data.experience) && typeof data.experience === "object")
     data.experience = [data.experience];
+
+  let contactArray = [];
+  if (data.contact) {
+    contactArray = Object.entries(data.contact).map(([key, value]) => ({
+      label: key.toLowerCase(),
+      url: value,
+    }));
+  }
+
   return {
     fullName: capitalizeFirstLetterOfEachWord(data.basic_details.name),
     title: capitalizeFirstLetterOfEachWord(data.basic_details.title),
     location: data.basic_details.location,
-    contact: data.contact,
+    contact: contactArray,
     about: data.about.about,
     skills: data.about.skills,
     education: data.education,
@@ -82,6 +91,13 @@ const getUploadedUrl = async (data: any) => {
 };
 
 const getHTMLTemplate = (data: UserDataType) => {
+  const capitalizeFirstLetter = (string) =>
+    string.charAt(0).toUpperCase() + string.slice(1);
+
+  const formatSocialMediaUrl = (url) => {
+    const urlObj = new URL(url);
+    return `${urlObj.hostname.replace("www.", "")}/${urlObj.pathname.replace("/", "")}`;
+  };
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   
@@ -164,7 +180,7 @@ const getHTMLTemplate = (data: UserDataType) => {
               font-style: normal;
               font-weight: normal;
               text-decoration: none;
-              font-size: 8pt;
+              font-size: 10pt;
           }
   
           .p,
@@ -174,7 +190,7 @@ const getHTMLTemplate = (data: UserDataType) => {
               font-style: normal;
               font-weight: normal;
               text-decoration: none;
-              font-size: 9pt;
+              font-size: 10pt;
               margin: 0pt;
           }
   
@@ -197,20 +213,44 @@ const getHTMLTemplate = (data: UserDataType) => {
     <div class='head'>
       <div>
      <h1 style="padding-top: 5pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">${data.fullName}</h1>
-        <p class="s6" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">${data.title}</p>
+        <p class="s6" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">${data.title} ${data.location.length > 0 ? `- <span class="s6">${data.location[0]}</span>` : ""}</p>
       </div>
     <div style="padding-top: 5pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">
-      <p class="s1" style="padding-top: 5pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">Lorem ipsum dolor sit amet, consectetuer adipiscing elit</p>
-      <p class="s1" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">123 Your Street</p>
-      <p class="s1" style="padding-top: 2pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">Your City, ST 12345</p>
-      <p class="s2" style="padding-left: 5pt;text-indent: 0pt;text-align: left;">(123) 456-7890</p>
-      <p style="padding-left: 5pt;text-indent: 0pt;text-align: left;"><a href="mailto:no_reply@example.com">no_reply@example.com</a></p>
+    ${data.contact
+      .map((item) => {
+        const label = capitalizeFirstLetter(item.label);
+        const url =
+          item.label != "email" ? formatSocialMediaUrl(item.url) : item.url;
+
+        if (item.label === "email") {
+          return `<p style="padding-left: 5pt;text-indent: 0pt;text-align: left;">
+              <a href="mailto:${item.url}">E-mail: ${item.url}</a>
+          </p>`;
+        } else if (item.label == "twitter" || item.label == "x.com") {
+          return `<p style="padding-left: 5pt;text-indent: 0pt;line-height: 130%;text-align: left;">
+              <a href="${item.url}">${label}: ${url}</a>
+          </p>`;
+        } else if (item.label == "github") {
+          return `<p style="padding-left: 5pt;text-indent: 0pt;line-height: 130%;text-align: left;">
+              <a href="${item.url}">${label}: ${url}</a>
+          </p>`;
+        } else if (item.label == "linkedin") {
+          return `<p style="padding-left: 5pt;text-indent: 0pt;line-height: 130%;text-align: left;">
+              <a href="${item.url}">LinkedIn: ${url}</a>
+          </p>`;
+        } else if (item.label == "personalwebsite") {
+          return `<p style="padding-left: 5pt;text-indent: 0pt;line-height: 130%;text-align: left;">
+              <a href="${item.url}">Website: ${url}</a>
+          </p>`;
+        }
+      })
+      .join("")}
     </div></div>
      
       <p style="padding-top: 2pt;text-indent: 0pt;text-align: left;"><br /></p>
 
       <p class="s3" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">ABOUT</p>
-      <p style="padding-top: 6pt;padding-left: 5pt;text-indent: 0pt;line-height: 125%;text-align: left;">${data.about}</p>
+      <p style="padding-top: 6pt;padding-left: 5pt;text-indent: 0pt;line-height: 130%;text-align: left;">${data.about}</p>
 
       <p style="padding-top: 5pt;text-indent: 0pt;text-align: left;"><br /></p>
 
@@ -219,9 +259,9 @@ const getHTMLTemplate = (data: UserDataType) => {
         (item) =>
           `
         <p style="padding-top: 2pt;text-indent: 0pt;text-align: left;"><br /></p>
-        <h2 style="padding-left: 5pt;text-indent: 0pt;text-align: left;">${item.org ? item.org : ""} - <span class="s4">${item.title ? item.title : ""}</span></h2>
+        <h2 style="padding-left: 5pt;text-indent: 0pt;text-align: left;">${item.org ? item.org : ""} ${item.title ? `- <span class="s4">${item.title}</span>` : ""}</h2>
         <p class="s6" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">${item.duration ? item.duration : ""}</p>
-        <p style="padding-top: 6pt;padding-left: 5pt;text-indent: 0pt;line-height: 125%;text-align: left;">${item.description ? item.description : ""}</p>
+        <p style="padding-top: 6pt;padding-left: 5pt;text-indent: 0pt;line-height: 130%;text-align: left;">${item.description ? item.description : ""}</p>
       `
       )}
       <p style="padding-top: 5pt;text-indent: 0pt;text-align: left;"><br /></p>
@@ -231,9 +271,9 @@ const getHTMLTemplate = (data: UserDataType) => {
         (item) =>
           `
       <p style="padding-top: 2pt;text-indent: 0pt;text-align: left;"><br /></p>
-      <h2 style="padding-left: 5pt;text-indent: 0pt;text-align: left;">${item.institution ? item.institution : ""} - <span class="s4">${item.course_name ? item.course_name : ""}</span></h2>
+      <h2 style="padding-left: 5pt;text-indent: 0pt;text-align: left;">${item.institution ? item.institution : ""} ${item.course_name ? `- <span class="s4">${item.course_name}</span>` : ""}</h2>
       <p class="s6" style="padding-top: 4pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">${item.duration ? item.duration : ""}</p>
-      <p style="padding-top: 6pt;padding-left: 5pt;text-indent: 0pt;line-height: 125%;text-align: left;">${item.description ? item.description : ""}</p>
+      <p style="padding-top: 6pt;padding-left: 5pt;text-indent: 0pt;line-height: 130%;text-align: left;">${item.description ? item.description : ""}</p>
       `
       )}
       <p style="text-indent: 0pt;text-align: left;"><br /></p>
