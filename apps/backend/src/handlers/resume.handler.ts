@@ -17,6 +17,8 @@ const generateResume = catchAsync(
   }
 );
 
+/// utility functions ///
+
 const getRefactoredData = (data) => {
   if (!Array.isArray(data.education) && typeof data.education === "object")
     data.education = [data.education];
