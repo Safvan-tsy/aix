@@ -39,8 +39,8 @@ importers:
         specifier: ^4.19.2
         version: 4.19.2
       instill-sdk:
-        specifier: ^0.0.6
-        version: 0.0.6
+        specifier: ^0.0.7
+        version: 0.0.7
       puppeteer:
         specifier: ^22.9.0
         version: 22.9.0(typescript@5.3.3)
@@ -4017,8 +4017,8 @@ packages:
       wrap-ansi: 6.2.0
     dev: true
 
-  /instill-sdk@0.0.6:
-    resolution: {integrity: sha512-GBl0yR3iBp3DH5WBeHmBv8YqHieEWzz0qqjE07k8LsNFCe1n4AbkkBI7nUg0/WtTDUT+mZIYNWD1n4Oi2C4NJw==}
+  /instill-sdk@0.0.7:
+    resolution: {integrity: sha512-MS8YWqyTIc54PSjQ3CMg7BaHBKzGNNIzRHfFR58EzHPZKIpm2eRBsC/SrYMQ6br9a70XzjesUlbePvoylx4rLg==}
     dependencies:
       '@types/json-schema': 7.0.12
       axios: 1.7.2
