@@ -14,7 +14,7 @@ cloudinary.config({
 
 export const instill = new InstillClient(
   "https://api.instill.tech",
-  "v1alpha",
+  "v1beta",
   process.env.Instill_Token
 );
 process.on("uncaughtException", (err: Error) => {
