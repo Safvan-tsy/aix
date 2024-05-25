@@ -17,6 +17,17 @@ const generateResume = catchAsync(
   }
 );
 
+const generateData = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    let data = req.body;
+    const parsedData = getParsedData(data);
+    const refactoredData = getRefactoredData(parsedData);
+
+    res.status(200).json(refactoredData);
+  }
+);
+/// utility functions ///
+
 const getRefactoredData = (data) => {
   if (!Array.isArray(data.education) && typeof data.education === "object")
     data.education = [data.education];
@@ -37,6 +48,11 @@ const getRefactoredData = (data) => {
   data.education.forEach((item) => {
     if (item.education && Array.isArray(item.education)) {
       data.education = item.education;
+    }
+  });
+  data.experience.forEach((item) => {
+    if (item.experience && Array.isArray(item.experience)) {
+      data.experience = item.experience;
     }
   });
 
@@ -311,4 +327,4 @@ const getHTMLTemplate = (data: UserDataType) => {
   </html>`;
 };
 
-export { generateResume };
+export { generateResume, generateData };
