@@ -17,6 +17,15 @@ const generateResume = catchAsync(
   }
 );
 
+const generateData = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    let data = req.body;
+    const parsedData = getParsedData(data);
+    const refactoredData = getRefactoredData(parsedData);
+
+    res.status(200).json(refactoredData);
+  }
+);
 /// utility functions ///
 
 const getRefactoredData = (data) => {
@@ -318,4 +327,4 @@ const getHTMLTemplate = (data: UserDataType) => {
   </html>`;
 };
 
-export { generateResume };
+export { generateResume, generateData };
