@@ -41,6 +41,11 @@ const getRefactoredData = (data) => {
       data.education = item.education;
     }
   });
+  data.experience.forEach((item) => {
+    if (item.experience && Array.isArray(item.experience)) {
+      data.experience = item.experience;
+    }
+  });
 
   return {
     fullName: capitalizeFirstLetterOfEachWord(data.basic_details.name),
