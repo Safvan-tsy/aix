@@ -5,8 +5,8 @@ Scale up your career hunt using aix.
 
 ### Apps and Packages
 
-- `web`: [Next.js](https://nextjs.org/) app
-- `backend` Node.Js backend using Express.Js Framework
+- `web`: [Next.js](https://nextjs.org/) app [ Prod: https://aix-web.vercel.app/ ]
+- `backend` Node.Js backend using Express.Js Framework [Prod: https://aix-backend.onrender.com ]
 
 ### Build
 
