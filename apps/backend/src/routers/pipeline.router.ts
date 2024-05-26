@@ -1,8 +1,12 @@
 import express from "express";
-import { resumePipeline } from "../handlers/pipeline.handler";
+import {
+  booleanSearchPipeline,
+  resumePipeline,
+} from "../handlers/pipeline.handler";
 
 const router = express.Router();
 
-router.route("/").post(resumePipeline);
+router.route("/resume").post(resumePipeline);
+router.route("/boolean").post(booleanSearchPipeline);
 
 export default router;
