@@ -22,6 +22,7 @@ export const FeatureCard = ({ data }: { data: CandidateType }) => {
     | undefined
   >();
   const [resumeUrl, setResumeUrl] = useState("");
+  const [booleanTexts, setBooleanTexts] = useState();
   const [loading, setLoding] = useState(false);
 
   const getPayload = () => {
@@ -62,6 +63,27 @@ export const FeatureCard = ({ data }: { data: CandidateType }) => {
     }
   };
 
+  const generateBooleanText = async () => {
+    setLoding(true);
+
+    const payload = getPayload();
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const response = await fetch(`${url}/pipeline/boolean`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: payload,
+    });
+
+    const res = await response.json();
+    console.log(res);
+    if (response.ok) {
+      console.log(res);
+      setLoding(false);
+      setBooleanTexts(res.search_strings);
+    }
+  };
   // const fetchPipelines = async () => {
   //   const payload = getPayload();
   //   const url = process.env.NEXT_PUBLIC_API_URL;
@@ -147,8 +169,17 @@ export const FeatureCard = ({ data }: { data: CandidateType }) => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button>Generate Boolean Search Texts</Button>
-              <p></p>
+              {loading ? (
+                <Button disabled>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </Button>
+              ) : (
+                <Button onClick={generateBooleanText}>
+                  Generate Boolean Search Texts
+                </Button>
+              )}
+              {booleanTexts}
             </CardContent>
             <CardFooter></CardFooter>
           </Card>
