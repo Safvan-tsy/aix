@@ -13,127 +13,143 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { FieldSchema, MultiFieldSchema, formSchema } from "./schema/userData";
+import { MultiInput } from "@/components/ui/multi-input";
 
-const formSchema = z.object({
-  productName: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  website: z.string().min(2, {
-    message: "website must be at least 2 characters.",
-  }),
-  twitter: z.string().min(2, {
-    message: "Twitter url must be at least 2 characters.",
-  }),
-  twitterToken: z.string().min(2, {
-    message: "Token must be at least 2 characters.",
-  }),
-  noOfDays: z.string().min(1, {
-    message: "Provide number of days",
-  }),
-});
-const fieldList = [
-  {
-    name: "productName",
-    placeholder: "name",
-    label: "Product Name",
-    type: "text",
-  },
-  {
-    name: "website",
-    placeholder: "product website url",
-    label: "Website",
-    type: "text",
-  },
-  {
-    name: "twitter",
-    placeholder: "twitter",
-    label: "Twitter",
-    type: "text",
-  },
-  {
-    name: "twitterToken",
-    placeholder: "token",
-    label: "Twitter Token",
-    type: "text",
-  },
-];
 const DataForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      productName: "",
-      website: "",
-      twitter: "",
-      twitterToken: "",
-      noOfDays: "1",
+      fullName: "",
+      email: "",
+      title: "",
+      yoe: "",
+      about: "",
+      experience: "",
+      education: "",
+      locations: "",
+      skills: "",
+      social: "",
     },
   });
-
+  const { reset } = form;
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+
+    localStorage.setItem("candidate", JSON.stringify(values));
+    reset();
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {fieldList.map((item) => (
-          <FormField
-            control={form.control}
-            key={item.name}
-            name={
-              item.name as
-                | "productName"
-                | "website"
-                | "twitter"
-                | "twitterToken"
-            }
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{item.label}</FormLabel>
-                <FormControl>
-                  <Input
-                    type={item.type}
-                    placeholder={item.placeholder}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        ))}{" "}
-        <FormField
-          control={form.control}
-          name="noOfDays"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Number of Days</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a Past number of days" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {["1", "5", "7", "10"].map((item) => (
-                    <SelectItem key={item} value={item}>
-                      {item}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormItem>
-          )}
-        />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+        <div className="flex flex-wrap justify-around w-full">
+          <div className="w-full">
+            {FieldSchema.map((item) => (
+              <FormField
+                control={form.control}
+                key={item.name}
+                name={item.name as "fullName" | "title" | "email" | "yoe"}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{item.label}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type={item.type}
+                        placeholder={item.placeholder}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}{" "}
+          </div>
+
+          <div className="w-full">
+            <FormField
+              control={form.control}
+              name="about"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>About</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="A description about yourself,skills, expertice, etc.."
+                      id="about"
+                      className="lg:min-w-96 md:min-w-80"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="education"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Education</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="A breif about you education ."
+                      id="education"
+                      className="lg:min-w-96 md:min-w-80"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="experience"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Experience</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Breif you experience which can match you with your preferred job title"
+                      id="experience"
+                      className="lg:min-w-96 md:min-w-80"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="w-full">
+            {MultiFieldSchema.map((item) => (
+              <FormField
+                control={form.control}
+                key={item.name}
+                name={item.name as "skills" | "locations" | "social"}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{item.label}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type={item.type}
+                        placeholder={item.placeholder}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}{" "}
+          </div>
+        </div>
         <div className="flex justify-center items-center">
-          <Button className="flex min-w-full" type="submit">Submit</Button>
+          <Button className="flex min-w-full" type="submit">
+            Lets start
+          </Button>
         </div>
       </form>
     </Form>
