@@ -35,6 +35,7 @@ export interface CandidateType {
   title: string;
   yoe: string;
   email: string;
+  locations: string;
   skills: string;
   social: string;
   education: string;
