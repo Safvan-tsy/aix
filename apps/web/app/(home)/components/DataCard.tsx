@@ -8,18 +8,23 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import DataForm from "./DataForm";
+import Image from "next/image";
+import logo from "@/public/aix_logo.png";
 
 const DataCard = () => {
   return (
-    <div className="">
-      <Card>
+    <div className="flex flex-col items-center justify-center p-2">
+      <Image width={200} height={200} src={logo} alt="logo" />
+      <Card className="xl:min-w-[60rem]">
         <CardHeader>
-          <CardTitle className="text-blue-500">
-            Social Sentiment Analyzer
+          <CardTitle className="text-blue-500 flex justify-center">
+            Candidate Information
           </CardTitle>
-          {/* <CardDescription>Input</CardDescription> */}
+          <CardDescription>
+            This data is required to use the features
+          </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="lg:p-6 xl:p-8 2xl:p-10 w-full">
           <DataForm />
         </CardContent>
         {/* <CardFooter>

@@ -20,4 +20,60 @@ const resumePipeline = catchAsync(
   }
 );
 
-export { resumePipeline };
+const getResumePipeline = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const pipelineResponse = await instill.Pipeline.getUserPipelineQuery({
+      pipelineName: "users/safvan/pipelines/resume_generator",
+    });
+    res.status(200).json({
+      status: "success",
+      pipeline: {
+        name: pipelineResponse.name,
+        id: pipelineResponse.id,
+        description: pipelineResponse.description,
+        readme: pipelineResponse.readme,
+      },
+    });
+  }
+);
+
+const booleanSearchPipeline = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const payload: TriggerUserPipelinePayload = {
+      inputs: [req.body],
+    };
+    const pipelineResponse = await instill.Pipeline.triggerUserPipelineAction({
+      pipelineName: "users/safvan/pipelines/boolean_search_helper",
+      payload: payload,
+    });
+
+    res.status(200).json({
+      status: "success",
+      result: pipelineResponse.outputs,
+    });
+  }
+);
+
+const getBooleanSearchPipeline = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const pipelineResponse = await instill.Pipeline.getUserPipelineQuery({
+      pipelineName: "users/safvan/pipelines/boolean_search_helper",
+    });
+
+    res.status(200).json({
+      status: "success",
+      pipeline: {
+        name: pipelineResponse.name,
+        id: pipelineResponse.id,
+        description: pipelineResponse.description,
+        readme: pipelineResponse.readme,
+      },
+    });
+  }
+);
+export {
+  resumePipeline,
+  booleanSearchPipeline,
+  getBooleanSearchPipeline,
+  getResumePipeline,
+};
