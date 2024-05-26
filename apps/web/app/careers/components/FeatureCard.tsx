@@ -13,8 +13,29 @@ import logo from "@/public/aix_logo.png";
 import { CandidateType } from "@/app/(home)/components/schema/userData";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useGetResumePipeline } from "../actions/hooks";
+import Loader, { DarkLoader } from "@/components/ui/loader";
+import RemoteMdxPage from "./Mdx";
 
 export const FeatureCard = ({ data }: { data: CandidateType }) => {
+  const [resumePipelineData, setResumePipelineData] = React.useState<
+    | { name: string; id: string; description: string; readme: string }
+    | undefined
+  >();
+
+  const fetchPipelines = async () => {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const response = await fetch(`${url}/pipeline/resume`, {
+      method: "GET",
+    });
+    const res = await response.json();
+    setResumePipelineData(res.pipeline);
+
+  };
+
+  React.useEffect(() => {
+    fetchPipelines();
+  }, []);
   return (
     <div className="flex flex-col items-center ">
       <Image width={200} height={200} src={logo} alt="logo" />
@@ -41,8 +62,13 @@ export const FeatureCard = ({ data }: { data: CandidateType }) => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
-                <Button>Generate PDF Resume</Button>
-                <p></p></CardContent>
+              <Button>Generate PDF Resume</Button>
+              {/* {resumePipelineData ? (
+                <RemoteMdxPage  markdown={resumePipelineData.readme}/>
+              ) : (
+                <DarkLoader />
+              )} */}
+            </CardContent>
             <CardFooter></CardFooter>
           </Card>
         </TabsContent>
@@ -61,8 +87,8 @@ export const FeatureCard = ({ data }: { data: CandidateType }) => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
-                <Button>Generate Boolean Search Texts</Button>
-                <p></p>
+              <Button>Generate Boolean Search Texts</Button>
+              <p></p>
             </CardContent>
             <CardFooter></CardFooter>
           </Card>
