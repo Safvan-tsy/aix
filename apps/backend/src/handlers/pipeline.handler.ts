@@ -20,6 +20,23 @@ const resumePipeline = catchAsync(
   }
 );
 
+const getResumePipeline = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const pipelineResponse = await instill.Pipeline.getUserPipelineQuery({
+      pipelineName: "users/safvan/pipelines/resume_generator",
+    });
+    res.status(200).json({
+      status: "success",
+      pipeline: {
+        name: pipelineResponse.name,
+        id: pipelineResponse.id,
+        description: pipelineResponse.description,
+        readme: pipelineResponse.readme,
+      },
+    });
+  }
+);
+
 const booleanSearchPipeline = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const payload: TriggerUserPipelinePayload = {
@@ -37,4 +54,26 @@ const booleanSearchPipeline = catchAsync(
   }
 );
 
-export { resumePipeline, booleanSearchPipeline };
+const getBooleanSearchPipeline = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const pipelineResponse = await instill.Pipeline.getUserPipelineQuery({
+      pipelineName: "users/safvan/pipelines/boolean_search_helper",
+    });
+
+    res.status(200).json({
+      status: "success",
+      pipeline: {
+        name: pipelineResponse.name,
+        id: pipelineResponse.id,
+        description: pipelineResponse.description,
+        readme: pipelineResponse.readme,
+      },
+    });
+  }
+);
+export {
+  resumePipeline,
+  booleanSearchPipeline,
+  getBooleanSearchPipeline,
+  getResumePipeline,
+};
