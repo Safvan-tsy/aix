@@ -4,10 +4,18 @@ import catchAsync from "../utils/catchAsync";
 import { instill } from "../../index";
 import { TriggerUserPipelinePayload } from "instill-sdk";
 
+const refactorData = (data) => {
+  data.location = data.location.split(",");
+  data.skills = data.skills.split(",");
+  data.social = data.social.split(",");
+  return data;
+};
+
 const resumePipeline = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    let data = refactorData(req.body);
     const payload: TriggerUserPipelinePayload = {
-      inputs: [req.body],
+      inputs: [data],
     };
     const pipelineResponse = await instill.Pipeline.triggerUserPipelineAction({
       pipelineName: "users/safvan/pipelines/resume_generator",
@@ -39,8 +47,9 @@ const getResumePipeline = catchAsync(
 
 const booleanSearchPipeline = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    let data = refactorData(req.body);
     const payload: TriggerUserPipelinePayload = {
-      inputs: [req.body],
+      inputs: [data],
     };
     const pipelineResponse = await instill.Pipeline.triggerUserPipelineAction({
       pipelineName: "users/safvan/pipelines/boolean_search_helper",
