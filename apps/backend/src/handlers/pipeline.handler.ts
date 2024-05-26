@@ -5,17 +5,22 @@ import { instill } from "../../index";
 import { TriggerUserPipelinePayload } from "instill-sdk";
 
 const refactorData = (data) => {
-  data.location = data.location.split(",");
+  data.location = data.locations.split(",");
   data.skills = data.skills.split(",");
   data.social = data.social.split(",");
+  delete data.locations;
+  if (data.fullName) {
+    data.full_name = data.fullName;
+    delete data.fullName;
+  }
+
   return data;
 };
 
 const resumePipeline = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    let data = refactorData(req.body);
     const payload: TriggerUserPipelinePayload = {
-      inputs: [data],
+      inputs: [req.body],
     };
     const pipelineResponse = await instill.Pipeline.triggerUserPipelineAction({
       pipelineName: "users/safvan/pipelines/resume_generator",
@@ -47,9 +52,9 @@ const getResumePipeline = catchAsync(
 
 const booleanSearchPipeline = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    let data = refactorData(req.body);
+    // let data = refactorData(req.body);
     const payload: TriggerUserPipelinePayload = {
-      inputs: [data],
+      inputs: [req.body],
     };
     const pipelineResponse = await instill.Pipeline.triggerUserPipelineAction({
       pipelineName: "users/safvan/pipelines/boolean_search_helper",

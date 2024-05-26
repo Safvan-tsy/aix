@@ -13,7 +13,7 @@ const generateResume = catchAsync(
     const refactoredData = getRefactoredData(parsedData);
     const pdf = await getUploadedUrl(refactoredData);
 
-    res.status(200).json({ resume_url: pdf, data: refactoredData });
+    res.status(200).json({ resume_url: pdf });
   }
 );
 
