@@ -8,9 +8,6 @@ Scale up your career hunt using aix.
 - `web`: [Next.js](https://nextjs.org/) app [ Prod: https://aix-web.vercel.app/ ]
 - `backend` Node.Js backend using Express.Js Framework [Prod: https://aix-backend.onrender.com ]
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-
 ### Build
 
 To build all apps and packages, run the following command:
