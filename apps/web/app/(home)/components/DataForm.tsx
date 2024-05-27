@@ -16,8 +16,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FieldSchema, MultiFieldSchema, formSchema } from "./schema/userData";
 import { MultiInput } from "@/components/ui/multi-input";
+import { useRouter } from "next/navigation";
 
 const DataForm = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,9 +37,10 @@ const DataForm = () => {
   });
   const { reset } = form;
   function onSubmit(values: z.infer<typeof formSchema>) {
-
     localStorage.setItem("candidate", JSON.stringify(values));
+    localStorage.removeItem('resume_url')
     reset();
+    router.push("/careers");
   }
 
   return (

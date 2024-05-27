@@ -8,7 +8,7 @@ import { resumeRouter, pipelineRouter } from "./routers";
 const app: Express = express();
 
 const corsOptions = {
-  origin: ["http://localhost:3000", "*"],
+  origin: ["http://localhost:3000", "https://aix-web.vercel.app", "*"],
   credentials: true,
   optionSuccessStatus: 200,
 };

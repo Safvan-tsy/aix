@@ -57,9 +57,9 @@ export const FeatureCard = ({ data }: { data: CandidateType }) => {
     const res = await response.json();
     console.log(res);
     if (response.ok) {
-      console.log(res);
       setLoding(false);
-      setResumeUrl(res.resume.resume.resume_url);
+      setResumeUrl(res.resume[0].resume.resume_url);
+      localStorage.setItem("resume_url", res.resume[0].resume.resume_url);
     }
   };
 
@@ -77,11 +77,9 @@ export const FeatureCard = ({ data }: { data: CandidateType }) => {
     });
 
     const res = await response.json();
-    console.log(res);
     if (response.ok) {
-      console.log(res);
       setLoding(false);
-      setBooleanTexts(res.search_strings);
+      setBooleanTexts(res.result[0].search_strings[0]);
     }
   };
   // const fetchPipelines = async () => {
@@ -99,9 +97,10 @@ export const FeatureCard = ({ data }: { data: CandidateType }) => {
   //   }
   // };
 
-  // React.useEffect(() => {
-  //   fetchPipelines();
-  // }, []);
+  React.useEffect(() => {
+    const resumeUrl = localStorage.getItem("resume_url") ?? "";
+    setResumeUrl(resumeUrl);
+  }, []);
   return (
     <div className="flex flex-col items-center ">
       <Image width={200} height={200} src={logo} alt="logo" />
@@ -174,12 +173,17 @@ export const FeatureCard = ({ data }: { data: CandidateType }) => {
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Please wait
                 </Button>
-              ) : (
+              ) : (!booleanTexts &&
                 <Button onClick={generateBooleanText}>
                   Generate Boolean Search Texts
                 </Button>
               )}
-              {booleanTexts}
+                <div
+                className=""
+                dangerouslySetInnerHTML={{
+                  __html: booleanTexts ?? '',
+                }}
+              />
             </CardContent>
             <CardFooter></CardFooter>
           </Card>
