@@ -1,8 +1,10 @@
 import DataCard from "./components/DataCard";
+import Hero from "./components/Hero";
 
 export default function Page(): JSX.Element {
   return (
-    <section className="flex justify-center bg-gradient-to-tr from-green-400 to-yellow-400 min-h-screen">
+    <section className="flex flex-col justify-center min-h-screen">
+      <Hero/>
       <DataCard />
     </section>
   );
