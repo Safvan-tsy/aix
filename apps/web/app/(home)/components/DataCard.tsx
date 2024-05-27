@@ -13,8 +13,7 @@ import logo from "@/public/aix_logo.png";
 
 const DataCard = () => {
   return (
-    <div className="flex flex-col items-center justify-center p-2">
-      <Image width={200} height={200} src={logo} alt="logo" />
+    <div className="flex flex-col items-center justify-center p-2" id="candidate">
       <Card className="xl:min-w-[60rem]">
         <CardHeader>
           <CardTitle className="text-blue-500 flex justify-center">
