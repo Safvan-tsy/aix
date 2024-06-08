@@ -327,4 +327,14 @@ const getHTMLTemplate = (data: UserDataType) => {
   </html>`;
 };
 
-export { generateResume, generateData };
+export {
+  generateResume,
+  generateData,
+  capitalizeFirstLetterOfEachWord,
+  getHTMLTemplate,
+  getParsedData,
+  getRefactoredData,
+  getUploadedUrl,
+  pdfGenerator,
+  uploadPdfToCloudinary,
+};
