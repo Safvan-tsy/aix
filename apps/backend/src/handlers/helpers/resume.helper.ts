@@ -53,6 +53,7 @@ const getParsedData = (data) => {
 };
 
 const pdfGenerator = async (data): Promise<Buffer> => {
+  console.log('dont call here')
   // Create a browser instance
   const browser = await puppeteer.launch();
   const page = await browser.newPage();

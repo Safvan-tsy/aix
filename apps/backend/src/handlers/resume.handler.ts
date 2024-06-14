@@ -8,8 +8,7 @@ import {
 
 const generateResume = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    let data = req.body;
-    const parsedData = await getParsedData(data);
+    const parsedData = await getParsedData(req.body);
     const refactoredData = getRefactoredData(parsedData);
     const pdf = await getUploadedUrl(refactoredData);
 
