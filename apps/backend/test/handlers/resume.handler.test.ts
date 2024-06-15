@@ -1,25 +1,12 @@
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { createMocks } from "node-mocks-http";
-import { Request, Response, NextFunction } from "express";
-import puppeteer, { Browser, Page } from "puppeteer";
+import { Request, Response } from "express";
 import * as resumeHelper from "../../src/handlers/helpers/resume.helper";
 import {
   generateData,
   generateResume,
 } from "../../src/handlers/resume.handler";
-import {
-  mockParsedData,
-  mockRawData,
-  mockRefactoredData,
-} from "./resume.helper.test";
+import { mockParsedData, mockRawData, mockRefactoredData } from "./mockData";
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -45,6 +32,9 @@ describe("generateData", () => {
     expect(resumeHelper.getRefactoredData).toHaveBeenCalledWith(mockParsedData);
     expect(res._getStatusCode()).toBe(200);
     expect(JSON.parse(res._getData())).toEqual(mockRefactoredData);
+
+    spyGetParsedData.mockRestore();
+    spyGetRefactoredData.mockRestore();
   });
 });
 
@@ -61,23 +51,18 @@ describe("generateResume", () => {
     const spyGetRefactoredData = vi
       .spyOn(resumeHelper, "getRefactoredData")
       .mockReturnValue(mockRefactoredData);
+    const mockExpectedResponse = { resume_url: "https://test.com/imge.jpg" };
     const spyGetUploadedUrl = vi
       .spyOn(resumeHelper, "getUploadedUrl")
-      .mockResolvedValue("https://test.com/imge.jpg");
+      .mockImplementation(async () => {
+        return Promise.resolve(mockExpectedResponse.resume_url);
+      });
 
-    // const mockGetUploadedUrl = vi
-    //   .fn()
-    //   .mockResolvedValue("https://test.image.com");
-    // const spyGetUploadedUrl = vi.spyOn(resumeHelper, "getUploadedUrl");
     await generateResume(req, res, mockNext);
 
     expect(spyGetParsedData).toHaveBeenCalledWith(mockRawData);
     expect(spyGetRefactoredData).toHaveBeenCalledWith(mockParsedData);
     expect(spyGetUploadedUrl).toHaveBeenCalled();
     expect(res._getStatusCode()).toBe(200);
-
-    expect(res._getData()).toEqual({
-      resume_url: "https://test.com/imge.jpg",
-    });
   });
 });

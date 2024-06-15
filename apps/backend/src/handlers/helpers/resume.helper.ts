@@ -1,8 +1,6 @@
-import puppeteer from "puppeteer";
-import { v2 as cloudinary } from "cloudinary";
-import { CloudinaryUploadResponse } from "../../types/cloudinary";
 import { UserDataType } from "../../types/user";
-/// utility functions ///
+import { uploadPdfToCloudinary } from "./cloudinary.helper";
+import { pdfGenerator } from "./puppeteer.helper";
 
 const getRefactoredData = (data) => {
   if (!Array.isArray(data.education) && typeof data.education === "object")
@@ -50,40 +48,6 @@ function capitalizeFirstLetterOfEachWord(str) {
 
 const getParsedData = (data) => {
   return JSON.parse(data[0].replace(/\\n/g, ""));
-};
-
-const pdfGenerator = async (data): Promise<Buffer> => {
-  console.log('dont call here')
-  // Create a browser instance
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  const htmlContent = getHTMLTemplate(data);
-  await page.setContent(htmlContent, { waitUntil: "domcontentloaded" });
-  await page.emulateMediaType("screen");
-
-  const pdf = await page.pdf({
-    format: "A4",
-    printBackground: true,
-    margin: { top: "50px", right: "40px", bottom: "50px", left: "40px" },
-  });
-  // Close the browser instance
-  await browser.close();
-  return pdf;
-};
-
-const uploadPdfToCloudinary = (
-  buffer: Buffer
-): Promise<CloudinaryUploadResponse> => {
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: "resumes" },
-      (error, result) => {
-        if (error) return reject(error);
-        resolve(result as CloudinaryUploadResponse);
-      }
-    );
-    stream.end(buffer);
-  });
 };
 
 const getUploadedUrl = async (data: any) => {
@@ -310,6 +274,4 @@ export {
   getParsedData,
   getRefactoredData,
   getUploadedUrl,
-  pdfGenerator,
-  uploadPdfToCloudinary,
 };
