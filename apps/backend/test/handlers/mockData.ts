@@ -77,3 +77,5 @@ export const mockRawData = [
       },
     ],
   };
+
+ export const mockHTMLContent = "<html><body>Test</body></html>";
