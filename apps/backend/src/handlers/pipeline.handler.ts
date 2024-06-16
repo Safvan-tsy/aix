@@ -4,19 +4,9 @@ import catchAsync from "../utils/catchAsync";
 import { instill } from "../../index";
 import { TriggerUserPipelinePayload } from "instill-sdk";
 
-const refactorData = (data) => {
-  data.location = data.locations.split(",");
-  data.skills = data.skills.split(",");
-  data.social = data.social.split(",");
-  delete data.locations;
-  if (data.fullName) {
-    data.full_name = data.fullName;
-    delete data.fullName;
-  }
-
-  return data;
-};
-
+/**
+ *
+ */
 const resumePipeline = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const payload: TriggerUserPipelinePayload = {
@@ -33,6 +23,9 @@ const resumePipeline = catchAsync(
   }
 );
 
+/**
+ *
+ */
 const getResumePipeline = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const pipelineResponse = await instill.Pipeline.getUserPipelineQuery({
@@ -50,6 +43,9 @@ const getResumePipeline = catchAsync(
   }
 );
 
+/**
+ *
+ */
 const booleanSearchPipeline = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     // let data = refactorData(req.body);
@@ -68,6 +64,9 @@ const booleanSearchPipeline = catchAsync(
   }
 );
 
+/**
+ *
+ */
 const getBooleanSearchPipeline = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const pipelineResponse = await instill.Pipeline.getUserPipelineQuery({
@@ -85,6 +84,7 @@ const getBooleanSearchPipeline = catchAsync(
     });
   }
 );
+
 export {
   resumePipeline,
   booleanSearchPipeline,
